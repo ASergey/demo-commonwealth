@@ -1,0 +1,65 @@
+require:
+  - rubocop-factory_bot
+  - rubocop-performance
+  - rubocop-rails
+  - rubocop-rspec
+
+inherit_gem:
+  test-prof: config/rubocop-rspec.yml
+
+AllCops:
+  NewCops: enable
+  CacheRootDirectory: tmp
+  Exclude:
+    - bin/*
+    - db/schema.rb
+    - vendor/*
+
+Metrics/AbcSize:
+  Exclude:
+    - db/migrate/*
+    - config/initializers/auto_inject/*
+
+Metrics/BlockLength:
+  Exclude:
+    - config/environments/*
+    - config/initializers/auto_inject/*
+    - config/routes.rb
+    - config/routes/*
+    - db/**/*
+    - spec/**/*
+
+Metrics/ClassLength:
+  Exclude:
+    - db/migrate/*
+
+Metrics/MethodLength:
+  Exclude:
+    - db/migrate/*
+    - config/initializers/auto_inject/*
+
+Rails/DeprecatedActiveModelErrorsMethods:
+  Exclude:
+    - app/errors/**/*
+    - spec/support/shared_examples/inputs/*
+
+RSpec/DescribeClass:
+  Exclude:
+    - spec/requests/**/*
+
+RSpec/EmptyExampleGroup:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/LambdaCall:
+  EnforcedStyle: braces
+
+Style/ClassAndModuleChildren:
+  Exclude:
+    - lib/**/*
+  EnforcedStyle: compact

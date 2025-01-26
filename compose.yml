@@ -1,0 +1,45 @@
+services:
+  backend:
+    image: commonwealth-dev:0.1.0
+    container_name: commonwealth-backend
+    build:
+      context: .dockerdev
+      dockerfile: Dockerfile
+      args:
+        RUBY_VERSION: '3.4.1'
+        PG_MAJOR: '17'
+    volumes:
+      - .:/app
+      - rails_cache:/app/tmp/cache
+      - bundle:/usr/local/bundle
+    tmpfs:
+    - /tmp
+    - /app/tmp/pids
+    depends_on:
+      db:
+        condition: service_healthy
+    command: .dockerdev/entrypoints/backend.sh
+    ports:
+      - 3000:3000
+    stdin_open: true
+    tty: true
+
+  db:
+    image: postgres:17-alpine
+    container_name: commonwealth-db
+    restart: on-failure
+    environment:
+      POSTGRES_PASSWORD: pwd
+    volumes:
+      - postgres:/var/lib/postgresql/data
+      - ./log:/root/log:cached
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: pg_isready -U postgres -h 127.0.0.1
+      interval: 5s
+
+volumes:
+  bundle:
+  postgres:
+  rails_cache:

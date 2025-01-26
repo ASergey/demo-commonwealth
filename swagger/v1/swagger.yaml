@@ -1,0 +1,769 @@
+---
+openapi: 3.0.1
+info:
+  title: API
+components:
+  schemas:
+    author:
+      type: object
+      properties:
+        id:
+          type: integer
+        firstname:
+          type: string
+        lastname:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+      - id
+      - firstname
+      - lastname
+      - created_at
+      - updated_at
+    course:
+      type: object
+      properties:
+        id:
+          type: integer
+        author_id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        skills:
+          type: array
+          items:
+            "$ref": "#/components/schemas/skill"
+        author:
+          "$ref": "#/components/schemas/author"
+      required:
+      - id
+      - author_id
+      - skills
+      - title
+      - description
+      - created_at
+      - updated_at
+    skill:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+      - id
+      - name
+      - created_at
+      - updated_at
+paths:
+  "/authors/{id}":
+    delete:
+      summary: Destroy author
+      tags:
+      - Author
+      operationId: destroyAuthor
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Author destroyed
+        '404':
+          description: Author not found
+    get:
+      summary: Show author
+      tags:
+      - Author
+      operationId: showAuthor
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Shown
+          content:
+            application/json:
+              example:
+                id: 749
+                firstname: Имя 3
+                lastname: Фамилия 3
+                created_at: '2025-01-27T16:21:37.674Z'
+                updated_at: '2025-01-27T16:21:37.674Z'
+              schema:
+                "$ref": "#/components/schemas/author"
+        '404':
+          description: Author not found
+          content:
+            application/json:
+              example:
+                errors:
+                - title: Couldn't find Author with 'id'=missing_id
+                  status: 404
+                  code: NOT_FOUND
+    patch:
+      summary: Update author
+      tags:
+      - Author
+      operationId: updateAuthor
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Author updated
+          content:
+            application/json:
+              example:
+                firstname: Алексей
+                lastname: Алексеев
+                id: 750
+                created_at: '2025-01-27T16:21:37.744Z'
+                updated_at: '2025-01-27T16:21:37.829Z'
+              schema:
+                "$ref": "#/components/schemas/author"
+        '404':
+          description: Author not found
+          content:
+            application/json:
+              example:
+                errors:
+                - title: Couldn't find Author with 'id'=missing_id
+                  status: 404
+                  code: NOT_FOUND
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              example:
+                errors:
+                - title: is missing
+                  code: INVALID_INPUT
+                  status: 422
+                  source:
+                    pointer: "/author/firstname"
+                - title: must be filled
+                  code: INVALID_INPUT
+                  status: 422
+                  source:
+                    pointer: "/author/lastname"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                author:
+                  type: object
+                  properties:
+                    firstname:
+                      type: string
+                    lastname:
+                      type: string
+                  required:
+                  - firstname
+                  - lastname
+              required:
+              - author
+  "/authors":
+    post:
+      summary: Add author
+      tags:
+      - Authors
+      operationId: createAuthor
+      parameters: []
+      responses:
+        '201':
+          description: Author created
+          content:
+            application/json:
+              example:
+                id: 752
+                firstname: Алексей
+                lastname: Алексеев
+                created_at: '2025-01-27T16:21:37.884Z'
+                updated_at: '2025-01-27T16:21:37.884Z'
+              schema:
+                "$ref": "#/components/schemas/author"
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              example:
+                errors:
+                - title: is missing
+                  code: INVALID_INPUT
+                  status: 422
+                  source:
+                    pointer: "/author/firstname"
+                - title: must be filled
+                  code: INVALID_INPUT
+                  status: 422
+                  source:
+                    pointer: "/author/lastname"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                author:
+                  type: object
+                  properties:
+                    firstname:
+                      type: string
+                    lastname:
+                      type: string
+                  required:
+                  - firstname
+                  - lastname
+              required:
+              - author
+    get:
+      summary: Lists authors
+      tags:
+      - Authors
+      operationId: listAuthors
+      responses:
+        '200':
+          description: List of authors
+          content:
+            application/json:
+              example:
+              - id: 753
+                firstname: Имя 6
+                lastname: Фамилия 6
+                created_at: '2025-01-27T16:21:37.893Z'
+                updated_at: '2025-01-27T16:21:37.893Z'
+              - id: 754
+                firstname: Имя 7
+                lastname: Фамилия 7
+                created_at: '2025-01-27T16:21:37.895Z'
+                updated_at: '2025-01-27T16:21:37.895Z'
+              - id: 755
+                firstname: Имя 8
+                lastname: Фамилия 8
+                created_at: '2025-01-27T16:21:37.896Z'
+                updated_at: '2025-01-27T16:21:37.896Z'
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/author"
+  "/courses/{id}":
+    delete:
+      summary: Destroy course
+      tags:
+      - Course
+      operationId: destroyCourse
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Course destroyed
+        '404':
+          description: Course not found
+    get:
+      summary: Show course
+      tags:
+      - Course
+      operationId: showCourse
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Shown
+          content:
+            application/json:
+              example:
+                id: 474
+                title: Курс 3
+                description:
+                author_id: 758
+                created_at: '2025-01-27T16:21:37.973Z'
+                updated_at: '2025-01-27T16:21:37.973Z'
+                skills: []
+                author:
+                  id: 758
+                  firstname: Имя 11
+                  lastname: Фамилия 11
+                  created_at: '2025-01-27T16:21:37.972Z'
+                  updated_at: '2025-01-27T16:21:37.972Z'
+              schema:
+                "$ref": "#/components/schemas/course"
+        '404':
+          description: Course not found
+          content:
+            application/json:
+              example:
+                errors:
+                - title: Couldn't find Course with 'id'=missing_id
+                  status: 404
+                  code: NOT_FOUND
+    patch:
+      summary: Update course
+      tags:
+      - Course
+      operationId: updateCourse
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Course updated
+          content:
+            application/json:
+              example:
+                title: Финансовая грамотность
+                author_id: 759
+                id: 475
+                description:
+                created_at: '2025-01-27T16:21:38.021Z'
+                updated_at: '2025-01-27T16:21:38.057Z'
+                skills:
+                - id: 709
+                  name: Навык 3
+                  created_at: '2025-01-27T16:21:38.030Z'
+                  updated_at: '2025-01-27T16:21:38.030Z'
+                author:
+                  id: 759
+                  firstname: Имя 12
+                  lastname: Фамилия 12
+                  created_at: '2025-01-27T16:21:38.015Z'
+                  updated_at: '2025-01-27T16:21:38.015Z'
+              schema:
+                "$ref": "#/components/schemas/course"
+        '404':
+          description: Course not found
+          content:
+            application/json:
+              example:
+                errors:
+                - title: Couldn't find Course with 'id'=missing_id
+                  status: 404
+                  code: NOT_FOUND
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              example:
+                errors:
+                - title: must be filled
+                  code: INVALID_INPUT
+                  status: 422
+                  source:
+                    pointer: "/course/title"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                course:
+                  type: object
+                  properties:
+                    title:
+                      type: string
+                    description:
+                      type: string
+                      nullable: true
+                    skill_ids:
+                      type: array
+                      items:
+                        type: integer
+                    author_id:
+                      type: integer
+                  required:
+                  - title
+                  - skill_ids
+                  - author_id
+              required:
+              - course
+  "/courses":
+    post:
+      summary: Add course
+      tags:
+      - Courses
+      operationId: createCourse
+      parameters: []
+      responses:
+        '201':
+          description: Course created
+          content:
+            application/json:
+              example:
+                id: 477
+                title: Финансовая грамотность
+                description:
+                author_id: 761
+                created_at: '2025-01-27T16:21:38.135Z'
+                updated_at: '2025-01-27T16:21:38.135Z'
+                skills:
+                - id: 713
+                  name: Навык 7
+                  created_at: '2025-01-27T16:21:38.110Z'
+                  updated_at: '2025-01-27T16:21:38.110Z'
+                - id: 714
+                  name: Навык 8
+                  created_at: '2025-01-27T16:21:38.112Z'
+                  updated_at: '2025-01-27T16:21:38.112Z'
+                author:
+                  id: 761
+                  firstname: Имя 14
+                  lastname: Фамилия 14
+                  created_at: '2025-01-27T16:21:38.109Z'
+                  updated_at: '2025-01-27T16:21:38.109Z'
+              schema:
+                "$ref": "#/components/schemas/course"
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              example:
+                errors:
+                - title: must be filled
+                  code: INVALID_INPUT
+                  status: 422
+                  source:
+                    pointer: "/course/title"
+                - title: is missing
+                  code: INVALID_INPUT
+                  status: 422
+                  source:
+                    pointer: "/course/skill_ids"
+                - title: is missing
+                  code: INVALID_INPUT
+                  status: 422
+                  source:
+                    pointer: "/course/author_id"
+        '422':
+          description: Already exists
+          content:
+            application/json:
+              example:
+                errors:
+                - title: 'Translation missing: en.errors.courses.title_taken'
+                  code: INVALID
+                  status: 422
+                  source:
+                    pointer: "/course/title"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                course:
+                  type: object
+                  properties:
+                    title:
+                      type: string
+                    description:
+                      type: string
+                      nullable: true
+                    skill_ids:
+                      type: array
+                      items:
+                        type: integer
+                    author_id:
+                      type: string
+                  required:
+                  - title
+                  - skill_ids
+                  - author_id
+              required:
+              - course
+    get:
+      summary: Lists courses
+      tags:
+      - Courses
+      operationId: listCourses
+      responses:
+        '200':
+          description: List of courses
+          content:
+            application/json:
+              example:
+              - id: 480
+                title: Курс 7
+                description:
+                author_id: 764
+                created_at: '2025-01-27T16:21:38.208Z'
+                updated_at: '2025-01-27T16:21:38.208Z'
+                skills:
+                - id: 717
+                  name: Навык 11
+                  created_at: '2025-01-27T16:21:38.203Z'
+                  updated_at: '2025-01-27T16:21:38.203Z'
+                author:
+                  id: 764
+                  firstname: Имя 17
+                  lastname: Фамилия 17
+                  created_at: '2025-01-27T16:21:38.205Z'
+                  updated_at: '2025-01-27T16:21:38.205Z'
+              - id: 481
+                title: Курс 8
+                description:
+                author_id: 765
+                created_at: '2025-01-27T16:21:38.215Z'
+                updated_at: '2025-01-27T16:21:38.215Z'
+                skills:
+                - id: 717
+                  name: Навык 11
+                  created_at: '2025-01-27T16:21:38.203Z'
+                  updated_at: '2025-01-27T16:21:38.203Z'
+                author:
+                  id: 765
+                  firstname: Имя 18
+                  lastname: Фамилия 18
+                  created_at: '2025-01-27T16:21:38.211Z'
+                  updated_at: '2025-01-27T16:21:38.211Z'
+              - id: 482
+                title: Курс 9
+                description:
+                author_id: 766
+                created_at: '2025-01-27T16:21:38.221Z'
+                updated_at: '2025-01-27T16:21:38.221Z'
+                skills:
+                - id: 717
+                  name: Навык 11
+                  created_at: '2025-01-27T16:21:38.203Z'
+                  updated_at: '2025-01-27T16:21:38.203Z'
+                author:
+                  id: 766
+                  firstname: Имя 19
+                  lastname: Фамилия 19
+                  created_at: '2025-01-27T16:21:38.218Z'
+                  updated_at: '2025-01-27T16:21:38.218Z'
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/course"
+  "/skills/{id}":
+    delete:
+      summary: Destroy skill
+      tags:
+      - Skill
+      operationId: destroySkill
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Skill destroyed
+        '404':
+          description: Skill not found
+    get:
+      summary: Show skill
+      tags:
+      - Skill
+      operationId: showSkill
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Shown
+          content:
+            application/json:
+              example:
+                id: 720
+                name: Навык 14
+                created_at: '2025-01-27T16:21:38.278Z'
+                updated_at: '2025-01-27T16:21:38.278Z'
+              schema:
+                "$ref": "#/components/schemas/skill"
+        '404':
+          description: Skill not found
+          content:
+            application/json:
+              example:
+                errors:
+                - title: Couldn't find Skill with 'id'=missing_id
+                  status: 404
+                  code: NOT_FOUND
+    patch:
+      summary: Update skill
+      tags:
+      - Skill
+      operationId: updateSkill
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Skill updated
+          content:
+            application/json:
+              example:
+                name: Финансы
+                id: 721
+                created_at: '2025-01-27T16:21:38.291Z'
+                updated_at: '2025-01-27T16:21:38.300Z'
+              schema:
+                "$ref": "#/components/schemas/skill"
+        '404':
+          description: Skill not found
+          content:
+            application/json:
+              example:
+                errors:
+                - title: Couldn't find Skill with 'id'=missing_id
+                  status: 404
+                  code: NOT_FOUND
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              example:
+                errors:
+                - title: must be filled
+                  code: INVALID_INPUT
+                  status: 422
+                  source:
+                    pointer: "/skill/name"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                skill:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                  required:
+                  - name
+              required:
+              - skill
+  "/skills":
+    post:
+      summary: Add skill
+      tags:
+      - Skills
+      operationId: createSkill
+      parameters: []
+      responses:
+        '201':
+          description: Skill created
+          content:
+            application/json:
+              example:
+                id: 723
+                name: Финансы
+                created_at: '2025-01-27T16:21:38.322Z'
+                updated_at: '2025-01-27T16:21:38.322Z'
+              schema:
+                "$ref": "#/components/schemas/skill"
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              example:
+                errors:
+                - title: must be filled
+                  code: INVALID_INPUT
+                  status: 422
+                  source:
+                    pointer: "/skill/name"
+        '422':
+          description: Already exists
+          content:
+            application/json:
+              example:
+                errors:
+                - title: The skill name is already taken
+                  code: INVALID
+                  status: 422
+                  source:
+                    pointer: "/skill/name"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                skill:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                  required:
+                  - name
+              required:
+              - skill
+    get:
+      summary: Lists skills
+      tags:
+      - Skills
+      operationId: listSkills
+      responses:
+        '200':
+          description: List of skills
+          content:
+            application/json:
+              example:
+              - id: 726
+                name: Навык 18
+                created_at: '2025-01-27T16:21:38.342Z'
+                updated_at: '2025-01-27T16:21:38.342Z'
+              - id: 727
+                name: Навык 19
+                created_at: '2025-01-27T16:21:38.344Z'
+                updated_at: '2025-01-27T16:21:38.344Z'
+              - id: 728
+                name: Навык 20
+                created_at: '2025-01-27T16:21:38.345Z'
+                updated_at: '2025-01-27T16:21:38.345Z'
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/skill"

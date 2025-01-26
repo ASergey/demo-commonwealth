@@ -1,0 +1,10 @@
+en:
+  errors:
+    authors:
+      destroy: 'Could not destroy author due to reason: %{reason}'
+    courses:
+      title: 'The course title is already taken'
+      no_one_for_replacement: 'There are no other authors for replacement'
+    skills:
+      name_taken: 'The skill name is already taken'
+
